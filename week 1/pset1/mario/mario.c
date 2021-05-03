@@ -13,9 +13,13 @@ int main(void)
         for (int i = 0; i < height; i++)
         {
             if (i < height - linha -  1)
+            {
                 printf(" ");
+            }
             else
+            {
                 printf("#");
+            }
         }
         // space between
         printf("  ");
@@ -23,7 +27,9 @@ int main(void)
         for (int i = 0; i < height; i++)
         {
             if (i <= linha)
+            {
                 printf("#");
+            }
         }
         printf("\n");
     }
