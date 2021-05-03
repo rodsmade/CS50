@@ -1,22 +1,16 @@
-#include <cs50.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <stdlib.h>
+#include <cs50.h>       // get_string()
+#include <ctype.h>      // isalpha(), isupper(), islower(), toupper(), tolower()
+#include <stdio.h>      // printf()
+#include <string.h>      // strlen()
 
-int input_is_alphabetic(string input);
-string substitution(string plaintext, string key);
+int     input_is_alphabetic(string input);
+string  string_to_upper(string s);
+string  string_to_lower(string s);
+int     key_is_valid(string key);
+string  substitution(string plaintext, string key);
 
-int main(int argc, string argv[])
+int     main(int argc, string argv[])
 {
-    /*Your program must accept a single command-line argument, the key to use for the substitution. The key itself should be case-insensitive, 
-    so whether any character in the key is uppercase or lowercase should not affect the behavior of your program.
-    If your program is executed without any command-line arguments or with more than one command-line argument, 
-    your program should print an error message of your choice (with printf) and return from main a value of 1 (which tends to signify an error) immediately.
-    If the key is invalid (as by not containing 26 characters, containing any character that is not an alphabetic character, 
-    or not containing each letter exactly once), your program should print an error message of your choice (with printf) and return from main a value of 1 immediately.
-    */
-    // Program accepts a single command-line argument, a non-negative integer. Otherwise, returns error message:
     string key = argv[1];
     if (argc != 2 || !key_is_valid(key))
     {
@@ -27,7 +21,6 @@ int main(int argc, string argv[])
         printf("Info:   Input is case-insensitive.\n");
         return (1);
     }
-    // Converts string to integer and normalises key so as it's less than or equal to 26:
     // Gets plaintext:
     string plaintext = get_string("plaintext: ");
     string ciphertext = plaintext;
@@ -38,8 +31,8 @@ int main(int argc, string argv[])
     return (0);
 }
 
-// Sweeps an array to check if it's content is only letters, case-insensitive (lower or upper)
-int input_is_alphabetic(string input)
+// Sweeps an array to check if its content is only letters, case-insensitive (lower or upper)
+int     input_is_alphabetic(string input)
 {
     for (int i = 0; input[i]; i++)
     {
@@ -51,44 +44,80 @@ int input_is_alphabetic(string input)
     return (1);
 }
 
-string key_is_valid(string input)
+string  string_to_upper(string s)
 {
-    // TODO: see if letters 
+    int length = strlen(s);
+    for (int i = 0; i < length; i++)
+    {
+        if (islower(s[i]))
+        {
+            s[i] = toupper(s[i]);
+        }
+    }
+    return (s);
 }
 
-// Caesar-cipher the string!
-string substitution(string plaintext, string key)
+string  string_to_lower(string s)
 {
-    int complement = 26 - key;
-    for (int i = 0; plaintext[i]; i++)
+    int length = strlen(s);
+    for (int i = 0; i < length; i++)
     {
-        // Checks if current char is alphabetic, otherwise goes to the next
+        if (isupper(s[i]))
+        {
+            s[i] = tolower(s[i]);
+        }
+    }
+    return (s);
+}
+
+int     key_is_valid(string key)
+{
+    // TODO: see if there's only 26 characters
+    int length = strlen(key);
+    if (length != 26)
+    {
+        return (0);
+    }
+    // Checksum is the sum from 65 ('A') through 90 ('Z') and is the same regardless of the order the letters come in;
+    // Internal sum is the sum of the integer value of every character in the key. It's meant to match checksum if every letter does appear only once;
+    int checksum = 0, internal_sum = 0;
+    for (int i = 0; i < 26; i++)
+    {
+        // Checks if it's only letters, otherwise returns false (0):
+        if (!isalpha(key[i]))
+        {
+            return (0);
+        }
+        // For the sake of simplicity, changing every character to uppercase for the internal sum:
+        internal_sum += toupper(key[i]);
+        checksum += 'A' + i;
+    }
+    // Compares checksum with the internal sum, thus the unicity of each letter in the key;
+    // Not being the same means there's at least one repeated byte in the key (given the length has already been checked to be 26), thus returns false (0):
+    if (internal_sum != checksum)
+    {
+        return (0);
+    }
+    return (1);
+}
+
+// Substitutes the string!
+string  substitution(string plaintext, string key)
+{
+    int length = strlen(plaintext);
+    // TODO: acho que esse for tá errado o 26, n seria length of plaintext?
+    for (int i = 0; i < length; i++)
+    {
+        // if char is not alphabetic, skips substitution and proceeds to next char.
         if (isalpha(plaintext[i]))
         {
-            if (plaintext[i] >= 'a' && plaintext [i] <= 'z')
+            if (islower(plaintext[i]))
             {
-                // Normalises char with 'a' if char is lowercase
-                // 'a' - 'a' = 0 so we need the offset of 1 to operate properly (i.e. 'a' = 1, 'b' = 2 ... z = '26')
-                if (plaintext[i] + 1 - 'a' + key <= 26)
-                {
-                    plaintext[i] += key;
-                }
-                else
-                {
-                    plaintext[i] -= complement;
-                }
+                plaintext[i] = tolower(key[plaintext[i] - 'a']);
             }
             else
             {
-                // Otherwise normalises char with 'A' instead
-                if (plaintext[i] + 1 - 'A' + 1 + key <= 26)
-                {
-                    plaintext[i] += key;
-                }
-                else
-                {
-                    plaintext[i] -= complement;
-                }
+                plaintext[i] = toupper(key[plaintext[i] - 'A']);
             }
         }
     }
