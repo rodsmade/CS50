@@ -15,20 +15,30 @@ int main(void)
         || (number > 379999999999999     && number < 4000000000000000)
         || (number > 4999999999999999    && number < 5100000000000000)
         ||  number > 5599999999999999)
+    {
         printf("INVALID\n");
+    }
     // if number is valid, decides which company the card belongs to
     else if (number_is_valid(number))
     {
         if (number >= 5100000000000000 && number <= 5599999999999999)
+        {
             printf("MASTERCARD\n");
+        }
         else if ((number >= 4000000000000 && number <= 4999999999999)
                  || (number >= 4000000000000000 && number <= 4999999999999999))
+        {
             printf("VISA\n");
-        else 
+        }
+        else
+        {
             printf("AMEX\n");
+        }
     }
     else
+    {
         printf("INVALID\n");
+    }
     return (0);
 }
 
@@ -36,7 +46,9 @@ long int prompt_card_number(void)
 {
     long int input;
     do
+    {
         input = get_long("Number: ");
+    }
     while (input < 0 || input > 9999999999999999);
     return input;
 }
@@ -54,19 +66,29 @@ int number_is_valid(long int number)
         // decides whether said digit belongs to the simple sum (odd_sum - beginning in the last digit)
         // or the tricky one (even_sum - beginning in the second but last digit)
         if (i % 2 == 0)
+        {
             odd_sum += digit;
+        }
         else
         {
             if (2 * digit < 10)
+            {
                 even_sum += 2 * digit;
+            }
             else
-            // 2*digit overflows unitary value, hence sums each digit individually
+            {
+                // 2*digit overflows unitary value, hence sums each digit individually
                 even_sum += (2 * digit) / 10 + (2 * digit) % 10;
+            }
         }
         number = number / 10;
     }
     if ((odd_sum + even_sum) % 10 == 0)
+    {
         return (1);    // card number is valid!
+    }
     else
+    {
         return (0);    // card number is not valid!
+    }
 }
