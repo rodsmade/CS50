@@ -1,8 +1,7 @@
-#include <cs50.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <stdlib.h>
+#include <cs50.h>       // get_string()
+#include <ctype.h>      // isalpha(), islower()
+#include <stdio.h>      // printf()
+#include <stdlib.h>     // atoi()
 
 int input_is_numeric(char input[]);
 string caesar_cipher(string plaintext, int key);
@@ -46,10 +45,10 @@ string caesar_cipher(string plaintext, int key)
     int complement = 26 - key;
     for (int i = 0; plaintext[i]; i++)
     {
-        // Checks if current char is alphabetic, otherwise goes to the next
+        // Checks if current char is alphabetic, otherwise moves on to the next
         if (isalpha(plaintext[i]))
         {
-            if (plaintext[i] >= 'a' && plaintext [i] <= 'z')
+            if (islower(plaintext[i]))
             {
                 // Normalises char with 'a' if char is lowercase
                 // 'a' - 'a' = 0 so we need the offset of 1 to operate properly (i.e. 'a' = 1, 'b' = 2 ... z = '26')
