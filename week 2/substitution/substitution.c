@@ -4,8 +4,8 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-int input_is_numeric(char input[]);
-string caesar_cipher(string plaintext, int key);
+int input_is_alphabetic(string input);
+string substitution(string plaintext, string key);
 
 int main(int argc, string argv[])
 {
@@ -17,29 +17,33 @@ int main(int argc, string argv[])
     or not containing each letter exactly once), your program should print an error message of your choice (with printf) and return from main a value of 1 immediately.
     */
     // Program accepts a single command-line argument, a non-negative integer. Otherwise, returns error message:
-    if (argc != 2 || argv[1] < 0 || !input_is_numeric(argv[1]))
+    string key = argv[1];
+    if (argc != 2 || !key_is_valid(key))
     {
-        printf("Usage: ./caesar key\n");
+        printf("Usage:  ./substitution key\n");
+        printf("Usage:  Do not input any more than one argument.\n");
+        printf("Usage:  Do not input any more than 26 letters.\n");
+        printf("Usage:  There must be no repetition of letters.\n");
+        printf("Info:   Input is case-insensitive.\n");
         return (1);
     }
     // Converts string to integer and normalises key so as it's less than or equal to 26:
-    int key = atoi(argv[1]) % 26;
     // Gets plaintext:
     string plaintext = get_string("plaintext: ");
     string ciphertext = plaintext;
     // Encrypts message:
-    ciphertext = caesar_cipher(plaintext, key);
+    ciphertext = substitution(plaintext, key);
     // Returns ciphered message:
     printf("ciphertext: %s\n", ciphertext);
     return (0);
 }
 
-// Sweeps an array to check if it's content is numeric
-int input_is_numeric(char input[])
+// Sweeps an array to check if it's content is only letters, case-insensitive (lower or upper)
+int input_is_alphabetic(string input)
 {
     for (int i = 0; input[i]; i++)
     {
-        if (!isdigit(input[i]))
+        if (!isalpha(input[i]))
         {
             return (0);
         }
@@ -47,8 +51,13 @@ int input_is_numeric(char input[])
     return (1);
 }
 
+string key_is_valid(string input)
+{
+    // TODO: see if letters 
+}
+
 // Caesar-cipher the string!
-string caesar_cipher(string plaintext, int key)
+string substitution(string plaintext, string key)
 {
     int complement = 26 - key;
     for (int i = 0; plaintext[i]; i++)
