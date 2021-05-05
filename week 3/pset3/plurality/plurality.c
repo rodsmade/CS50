@@ -66,7 +66,6 @@ int main(int argc, string argv[])
 // Update vote totals given a new vote
 bool vote(string name)
 {
-
     for (int i = 0; candidates[i].name != NULL; i++)
     {
         if (strcmp(candidates[i].name, name) == 0)
