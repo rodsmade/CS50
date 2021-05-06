@@ -1,0 +1,11 @@
+sort1 uses: Bubble Sort
+
+How do you know?: When running the three programs with sorted50000.txt and comparing with the other unknown algorithm (besides sort2, which I already know is Merge Sort), this one ran the fastest which represents the smallest omega order, that is of omega(n).
+
+sort2 uses: Merge Sort
+
+How do you know?: When running the three programs with the biggest randomized file, it was the quickest one, finishing at less than 1 second - representing the smallest O order, that of O(n log n). Also when running on sorted50000.txt, this algorithm wasn't any more efficient. This was the first run so there were only two algorithms left to find out.
+
+sort3 uses: Selection Sort
+
+How do you know?: Last one remaining. Also, it was the slowest to finish running random50000.txt, and slower than sort1 (Bubble Sort) when running sorted50000.txt.
