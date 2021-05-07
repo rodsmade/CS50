@@ -20,7 +20,7 @@ pair;
 
 // Array of candidates
 string candidates[MAX];
-pair pairs[MAX * (MAX - 1) / 2];
+pair pairs[MAX * (MAX - 1) / 2]; // one half of square matrix sans main diagonal, NOT actual amount of pairs. i guess if pref[i][j] == [j][i], that doesn't count as a pair
 
 int pair_count;
 int candidate_count;
@@ -97,9 +97,17 @@ int main(int argc, string argv[])
 }
 
 // Update ranks given a new vote
+// KINDA OK
 bool vote(int rank, string name, int ranks[])
 {
-    // TODO
+    for (int = i; i < candidate_count; i++)
+    {
+        if (candidate[i].name == name)
+        {
+            ranks[rank] = i;
+            return true;
+        }
+    }
     return false;
 }
 
@@ -107,6 +115,19 @@ bool vote(int rank, string name, int ranks[])
 void record_preferences(int ranks[])
 {
     // TODO
+    for (int i = 0; i < candidate_count - 1; i++)
+    {
+        for (int j = i + 1, j < candidate_count, j++)
+        {
+            for (int k = 0, k < candidate_count; k++)
+            {
+                if (candidates[k].name == ranks[i])
+                {
+                    preferences[k][j]++;
+                }
+            }
+        }
+    }
     return;
 }
 

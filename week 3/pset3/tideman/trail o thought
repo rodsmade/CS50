@@ -1,0 +1,87 @@
+## ARRAYS RELEVANTES
+string candidates[MAX]
+    0: A
+    1: B
+    2: C
+    ...
+    8: I
+
+int preferences[MAX][MAX]; - will represent the number of voters who prefer candidate i over candidate j.
+        A       B       C
+A       0       1       1
+B       0       0       0
+C       0       1       0
+
+bool locked[MAX][MAX];
+        A       B       C
+A       false   true    false
+B       false   false   false
+C       true    false   false
+
+
+Rank 1: Alice
+Rank 2: Charlie
+Rank 3: Bob
+
+Rank 1: Alice
+Rank 2: Charlie
+Rank 3: Bob
+
+Rank 1: Bob
+Rank 2: Charlie
+Rank 3: Alice
+
+Rank 1: Bob
+Rank 2: Charlie
+Rank 3: Alice
+
+Rank 1: Charlie
+Rank 2: Alice
+Rank 3: Bob
+
+//1: Ler os ranks. (void record_preferences(int ranks[]); // passa um rank (ballot) de cada voter por vez)
+    1. lê o primeiro rank; vai iterar preferences[0][j] (MAX - 1) vezes;
+    2. lê o seguinte rank; vai iterar preferences[1][j] (MAX - 1 - 1) vezes;
+    3. lê o seguinte rank; vai iterar preferences[2][j] (MAX - 1 - 1 - 1) vezes; - TÁ COM CARA DE RECURSÃO SLA
+    4. lê o seguinte rank; vai iterar preferences[3][j] (MAX - 1 - 1 - 1 - 1) vezes; - TÁ COM CARA DE RECURSÃO SLA
+    5. lê o seguinte rank; vai iterar preferences[4][j] (MAX - 1 - 1 - 1 - 1 - 1) vezes; - TÁ COM CARA DE RECURSÃO SLA
+    ...
+    8. lê o seguinte rank; vai iterar preferences[7][j] (MAX - 8) vezes.
+    9. lê o seguinte rank; vai iterar preferences[8][j] (MAX - 9) vezes. (Não roda!)
+
+    de 0 até candidate_count - 2 (i)
+        de 0 até candidate_count - 2 (j)
+            if (j
+
+//2: Lê o array preferences[i][j] (add_pairs())
+
+    int actual_pair_count = 0;
+    // já mata a diagonal pq preferences[i][j] == preferences[j][i]
+    if (preferences[i][j] != preferences[j][i])
+    {
+        if (preferences[i][j] > preferences[j][i])
+        {
+            pairs[actual_pair_count].winner = i;
+            pairs[actual_pair_count].loser = j;
+        }
+        else
+        {
+            pairs[actual_pair_count].winner = j;
+            pairs[actual_pair_count].loser = i;
+        }
+        actual_pair_count++;
+    }
+
+//3: sort the pairs array in decreasing order of strength of victory,
+        where strength of victory is defined to be the number of voters who prefer the preferred candidate.
+        If multiple pairs have the same strength of victory, you may assume that the order does not matter.
+        (sort_pairs())
+
+    for (int i = 0; pairs[i] != NULL; i++)
+    {
+
+    }
+
+    pair[0]
+        winner: 0
+        loser: 2
