@@ -85,3 +85,16 @@ Rank 3: Bob
     pair[0]
         winner: 0
         loser: 2
+        
+//4: lock pairs in:
+What is a cycle
+
+lock[MAX][MAX]
+    A       B       C       D                   _| 1st thing: lock[i][i] = false
+A   f       true    f       f                   _| 2nd thing: se a ganha de b, b não ganha de a. portando if lock[0][1] = true THEN lock[1][0] = false;
+B   f       f       f       f                   _| 3rd thing: preenche com o true e volta na tabela e vê se existe ao menos uma coluna só de f. se não, rollback (does not lock in)
+C   true    f       f       f                   _| 4th thing: ganha quem só tiver false na sua coluna
+D   f       f       true    f                   _| 5th thing: se tiver mais de ume candidate com false na coluna, a eleição eh um empate! "You may assume there will not be more than one source."
+cycle = each line has only one true bool!
+ganhador = source. source = se só tiver 1 false na sua linha (caso [i][i])
+ganhador = aquele em que na sua coluna [j] só existe false (o true significa alguém aponta pra vc)

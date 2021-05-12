@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
 
 // Max number of candidates
 #define MAX 9
@@ -7,7 +8,7 @@
 // preferences[i][j] is number of voters who prefer i over j
 int preferences[MAX][MAX];
 
-// locked[i][j] means i is locked in over j
+// locked[i][j] means i is locked in over j >> i wins over j and this arrow does not create a cycle
 bool locked[MAX][MAX];
 
 // Each pair has a winner, loser
@@ -20,7 +21,7 @@ pair;
 
 // Array of candidates
 string candidates[MAX];
-pair pairs[MAX * (MAX - 1) / 2]; // one half of square matrix sans main diagonal, NOT actual amount of pairs. i guess if pref[i][j] == [j][i], that doesn't count as a pair
+pair pairs[MAX * (MAX - 1) / 2];    // one half of square matrix sans main diagonal, NOT actual amount of pairs.
 
 int pair_count;
 int candidate_count;
@@ -97,12 +98,12 @@ int main(int argc, string argv[])
 }
 
 // Update ranks given a new vote
-// KINDA OK
+// OK
 bool vote(int rank, string name, int ranks[])
 {
-    for (int = i; i < candidate_count; i++)
+    for (int i = 0; i < candidate_count; i++)
     {
-        if (candidate[i].name == name)
+        if (!strcmp(candidates[i], name))
         {
             ranks[rank] = i;
             return true;
@@ -115,17 +116,11 @@ bool vote(int rank, string name, int ranks[])
 void record_preferences(int ranks[])
 {
     // TODO
-    for (int i = 0; i < candidate_count - 1; i++)
+    for (int rank_pivot = 0; rank_pivot < candidate_count - 1; rank_pivot++)
     {
-        for (int j = i + 1, j < candidate_count, j++)
+        for (int rank_below = rank_pivot + 1; rank_below < candidate_count; rank_below++)
         {
-            for (int k = 0, k < candidate_count; k++)
-            {
-                if (candidates[k].name == ranks[i])
-                {
-                    preferences[k][j]++;
-                }
-            }
+            preferences[ ranks[rank_pivot] ][ ranks[rank_below] ]++;
         }
     }
     return;
@@ -134,28 +129,100 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // TODO
+    for (int i = 1; i < candidate_count; i++)
+    {
+        for (int j = 0; j < i; j++)
+        {
+            if (preferences[i][j] != preferences[j][i])
+            {
+                if (preferences[i][j] > preferences[j][i])
+                {
+                    pairs[pair_count].winner = i;
+                    pairs[pair_count].loser = j;
+                }
+                else
+                {
+                    pairs[pair_count].winner = j;
+                    pairs[pair_count].loser = i;
+                }
+                pair_count++;
+            }
+        }
+    }
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // TODO
+    int strength[pair_count];
+    for (int i = 0; i < pair_count; i++)
+    {
+        strength[i] = preferences[pairs[i].winner][pairs[i].loser] - preferences[pairs[i].loser][pairs[i].winner];
+    }
+    // Sorts array of pairs based off array of strengths
+    // is this a bubble sort
+    pair aux;
+    for (int i = 1; i < pair_count; i++)
+    {
+        if (strength[i] > strength[i - 1])
+        {
+            aux = pairs[i - 1];
+            pairs[i - 1] = pairs[i];
+            pairs[i] = aux;
+        }
+    }
     return;
 }
 
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
+    for (int i = 0; i < pair_count; i++)
+    {
+        // locks the pair in first anyways and then checks if it creates a cycle
+        locked[ pairs[i].winner ][ pairs[i].loser ] = true;
+        // checks if it created a cycle. A cycle means there's no source, i.e., there are no columns with only false values on it left
+        // if that's the case, it rolls back (turns true back to false) and discards the pair, moving forward
+        for (int j = 0; j < candidate_count; j++)
+        {
+            int count_truths = 0;
+            for (int k = 0; k < candidate_count; k++)
+            {
+                if (preferences[k][j] == true)
+                {
+                    count_truths++;
+                    break;
+                }
+            }
+            if (count_truths == candidate_count)
+            {
+                locked[ pairs[i].winner ][ pairs[i].loser ] = false;
+            }
+        }
+    }
     return;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    int count_falses;
+    for (int j = 0; j < candidate_count; j++)
+    {
+        count_falses = 0;
+        for (int i = 0; i < candidate_count; i++)
+        {
+            if (locked[i][j] == false)
+            {
+                count_falses++;
+            }
+        }
+        if (count_falses == candidate_count)
+        {
+            printf("%s\n", candidates[j]);
+            break;
+        }
+    }
     return;
 }
-
