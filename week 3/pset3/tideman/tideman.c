@@ -184,21 +184,21 @@ void lock_pairs(void)
         locked[ pairs[i].winner ][ pairs[i].loser ] = true;
         // checks if it created a cycle. A cycle means there's no source, i.e., there are no columns with only false values on it left
         // if that's the case, it rolls back (turns true back to false) and discards the pair, moving forward
+        int count_truths = 0;
         for (int j = 0; j < candidate_count; j++)
         {
-            int count_truths = 0;
             for (int k = 0; k < candidate_count; k++)
             {
-                if (preferences[k][j] == true)
+                if (locked[k][j] == true)
                 {
                     count_truths++;
-                    break;
+                    k = candidate_count;
                 }
             }
-            if (count_truths == candidate_count)
-            {
-                locked[ pairs[i].winner ][ pairs[i].loser ] = false;
-            }
+        }
+        if (count_truths == candidate_count)
+        {
+            locked[ pairs[i].winner ][ pairs[i].loser ] = false;
         }
     }
     return;
